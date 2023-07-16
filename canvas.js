@@ -21,3 +21,4 @@ window.addEventListener("resize", function () {
 });
 
 sandbox.load(frag);
+sandbox.setUniform("seed", Math.random());

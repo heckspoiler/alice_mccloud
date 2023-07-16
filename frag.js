@@ -7,6 +7,7 @@ precision highp float;
 uniform float u_time;
 uniform vec2 u_resolution;
 uniform vec2 u_mouse;
+uniform float seed;
 
 
 varying vec2 v_texcoord;
@@ -26,7 +27,7 @@ void main(void)
     
     // where does the hue start
     
-    float hue = u_time * 0.02;
+    float hue = u_time * 0.02 + seed;
     
     // make two hsv colors
     
@@ -45,7 +46,7 @@ void main(void)
     
     // add some grain
     
-    float grain = mix(-0.1 * strength, 0.1 * strength, rand(uv));
+    float grain = rand(100.0 * uv) * mix(0.2, 0.01, strength);
     
     // make movement for fbm
     
@@ -54,15 +55,16 @@ void main(void)
     
     // make a noise pattern
     
-    float f = fbm(uv + movement);
+    float f = fbm(uv + movement + seed);
     f *= 10.0;
     f += grain;
     f += u_time * 0.2;
     f = fract(f);
     
     //mix colors based on noise pattern
+    float gap = mix(0.5, 0.01, strength);
     
-    float mixer = smoothstep(0.0,0.1,  f) - smoothstep(0.1, 0.2, f);
+    float mixer = smoothstep(0.0, gap,  f) - smoothstep(1.0 - gap, 1.0, f);
 
     // final pixel color is: 
     
